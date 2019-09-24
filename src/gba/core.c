@@ -602,7 +602,6 @@ static void _GBACoreReset(struct mCore* core) {
 		}
 	}
 
-#ifndef MINIMAL_CORE
 	int useAudioMixer;
 	if (!gbacore->audioMixer && mCoreConfigGetIntValue(&core->config, "gba.audioHle", &useAudioMixer) && useAudioMixer) {
 		gbacore->audioMixer = malloc(sizeof(*gbacore->audioMixer));
@@ -610,7 +609,6 @@ static void _GBACoreReset(struct mCore* core) {
 		((struct ARMCore*) core->cpu)->components[CPU_COMPONENT_AUDIO_MIXER] = &gbacore->audioMixer->d;
 		ARMHotplugAttach(core->cpu, CPU_COMPONENT_AUDIO_MIXER);
 	}
-#endif
 
 	bool forceGbp = false;
 	if (mCoreConfigGetIntValue(&core->config, "gba.forceGbp", &fakeBool)) {
