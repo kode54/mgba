@@ -844,10 +844,6 @@ void GBAFrameEnded(struct GBA* gba) {
 	int wasDirty = gba->memory.savedata.dirty;
 	GBASavedataClean(&gba->memory.savedata, gba->video.frameCounter);
 
-	if (gba->rr) {
-		gba->rr->nextFrame(gba->rr);
-	}
-
 #if !defined(MINIMAL_CORE) || MINIMAL_CORE < 3
 	if (gba->cpu->components && gba->cpu->components[CPU_COMPONENT_CHEAT_DEVICE]) {
 		struct mCheatDevice* device = (struct mCheatDevice*) gba->cpu->components[CPU_COMPONENT_CHEAT_DEVICE];
