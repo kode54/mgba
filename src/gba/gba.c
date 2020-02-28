@@ -855,7 +855,6 @@ void GBAFrameEnded(struct GBA* gba) {
 			}
 		}
 	}
-#endif
 
 	if (gba->stream && gba->stream->postVideoFrame) {
 		const color_t* pixels;
@@ -863,6 +862,7 @@ void GBAFrameEnded(struct GBA* gba) {
 		gba->video.renderer->getPixels(gba->video.renderer, &stride, (const void**) &pixels);
 		gba->stream->postVideoFrame(gba->stream, pixels, stride);
 	}
+#endif
 
 	if (gba->memory.hw.devices & (HW_GB_PLAYER | HW_GB_PLAYER_DETECTION)) {
 		GBASIOPlayerUpdate(gba);
