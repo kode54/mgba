@@ -566,6 +566,7 @@ static void _GBACoreReset(struct mCore* core) {
 	struct GBACore* gbacore = (struct GBACore*) core;
 	struct GBA* gba = (struct GBA*) core->board;
 	int fakeBool;
+#if !defined(MINIMAL_CORE) || MINIMAL_CORE < 3
 	if (gbacore->renderer.outputBuffer
 #if defined(BUILD_GLES2) || defined(BUILD_GLES3)
 	    || gbacore->glRenderer.outputTex != (unsigned) -1
@@ -601,6 +602,7 @@ static void _GBACoreReset(struct mCore* core) {
 			GBAVideoAssociateRenderer(&gba->video, renderer);
 		}
 	}
+#endif
 
 	int useAudioMixer;
 	if (!gbacore->audioMixer && mCoreConfigGetIntValue(&core->config, "gba.audioHle", &useAudioMixer) && useAudioMixer) {
