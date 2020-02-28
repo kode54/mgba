@@ -599,8 +599,10 @@ uint32_t GBALoad16(struct ARMCore* cpu, uint32_t address, int* cycleCounter) {
 		wait = memory->waitstatesNonseq16[address >> BASE_OFFSET];
 		if (memory->savedata.type == SAVEDATA_EEPROM || memory->savedata.type == SAVEDATA_EEPROM512) {
 			value = GBASavedataReadEEPROM(&memory->savedata);
+#if !defined(MINIMAL_CORE) || MINIMAL_CORE < 3
 		} else if ((address & 0x0DFC0000) >= 0x0DF80000 && memory->hw.devices & HW_EREADER) {
 			value = GBACartEReaderRead(&memory->ereader, address);
+#endif
 		} else if ((address & (SIZE_CART0 - 1)) < memory->romSize) {
 			LOAD_16(value, address & (SIZE_CART0 - 2), memory->rom);
 		} else if (memory->mirroring && (address & memory->romMask) < memory->romSize) {
@@ -715,9 +717,12 @@ uint32_t GBALoad8(struct ARMCore* cpu, uint32_t address, int* cycleCounter) {
 		if (gba->performingDMA == 1) {
 			break;
 		}
+#if !defined(MINIMAL_CORE) || MINIMAL_CORE < 3
 		if (memory->hw.devices & HW_EREADER && (address & 0xE00FF80) >= 0xE00FF80) {
 			value = GBACartEReaderReadFlash(&memory->ereader, address);
-		} else if (memory->savedata.type == SAVEDATA_SRAM) {
+		} else
+#endif
+		if (memory->savedata.type == SAVEDATA_SRAM) {
 			value = memory->savedata.data[address & (SIZE_CART_SRAM - 1)];
 		} else if (memory->savedata.type == SAVEDATA_FLASH512 || memory->savedata.type == SAVEDATA_FLASH1M) {
 			value = GBASavedataReadFlash(&memory->savedata, address);
@@ -978,10 +983,13 @@ void GBAStore16(struct ARMCore* cpu, uint32_t address, int16_t value, int* cycle
 		mLOG(GBA_MEM, GAME_ERROR, "Bad cartridge Store16: 0x%08X", address);
 		break;
 	case REGION_CART2_EX:
+#if !defined(MINIMAL_CORE) || MINIMAL_CORE < 3
 		if ((address & 0x0DFC0000) >= 0x0DF80000 && memory->hw.devices & HW_EREADER) {
 			GBACartEReaderWrite(&memory->ereader, address, value);
 			break;
-		} else if (memory->savedata.type == SAVEDATA_AUTODETECT) {
+		} else
+#endif
+		if (memory->savedata.type == SAVEDATA_AUTODETECT) {
 			mLOG(GBA_MEM, INFO, "Detected EEPROM savegame");
 			GBASavedataInitEEPROM(&memory->savedata);
 		}
@@ -1065,9 +1073,12 @@ void GBAStore8(struct ARMCore* cpu, uint32_t address, int8_t value, int* cycleCo
 				GBASavedataInitSRAM(&memory->savedata);
 			}
 		}
+#if !defined(MINIMAL_CORE) || MINIMAL_CORE < 3
 		if (memory->hw.devices & HW_EREADER && (address & 0xE00FF80) >= 0xE00FF80) {
 			GBACartEReaderWriteFlash(&memory->ereader, address, value);
-		} else if (memory->savedata.type == SAVEDATA_FLASH512 || memory->savedata.type == SAVEDATA_FLASH1M) {
+		} else
+#endif
+		if (memory->savedata.type == SAVEDATA_FLASH512 || memory->savedata.type == SAVEDATA_FLASH1M) {
 			GBASavedataWriteFlash(&memory->savedata, address, value);
 		} else if (memory->savedata.type == SAVEDATA_SRAM) {
 			if (memory->vfame.cartType) {
