@@ -133,8 +133,8 @@ struct mVideoLogContext;
 struct GBACore {
 	struct mCore d;
 	struct GBAVideoRenderer dummyRenderer;
-#if defined(BUILD_GLES2) || defined(BUILD_GLES3)
 	struct GBAVideoSoftwareRenderer renderer;
+#if defined(BUILD_GLES2) || defined(BUILD_GLES3)
 	struct GBAVideoGLRenderer glRenderer;
 #endif
 #ifndef MINIMAL_CORE
