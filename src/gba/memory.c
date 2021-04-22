@@ -95,9 +95,11 @@ void GBAMemoryInit(struct GBA* gba) {
 	GBADMAInit(gba);
 	GBAVFameInit(&gba->memory.vfame);
 
+#if !defined(MINIMAL_CORE) || MINIMAL_CORE < 3
 	gba->memory.ereader.p = gba;
 	gba->memory.ereader.dots = NULL;
 	memset(gba->memory.ereader.cards, 0, sizeof(gba->memory.ereader.cards));
+#endif
 }
 
 void GBAMemoryDeinit(struct GBA* gba) {
@@ -112,7 +114,9 @@ void GBAMemoryDeinit(struct GBA* gba) {
 		mappedMemoryFree(gba->memory.agbPrintBufferBackup, SIZE_AGB_PRINT);
 	}
 
+#if !defined(MINIMAL_CORE) || MINIMAL_CORE < 3
 	GBACartEReaderDeinit(&gba->memory.ereader);
+#endif
 }
 
 void GBAMemoryReset(struct GBA* gba) {

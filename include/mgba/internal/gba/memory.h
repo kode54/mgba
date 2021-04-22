@@ -110,7 +110,9 @@ struct GBAMemory {
 	struct GBASavedata savedata;
 	struct GBAVFameCart vfame;
 	struct GBAMatrix matrix;
+#if !defined(MINIMAL_CORE) || MINIMAL_CORE < 3
 	struct GBACartEReader ereader;
+#endif
 	size_t romSize;
 	uint32_t romMask;
 	uint16_t romID;
